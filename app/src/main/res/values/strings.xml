@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">lab13</string>
+    <string name="title">Название</string>
+    <string name="authors">Автор(ы)</string>
+    <string name="page_count">Кол-во страниц</string>
+    <string name="Index">Индекс книги</string>
+    <string name="add">Добавить</string>
+    <string name="addStyle">Добавить жанр</string>
+    <string name="goCheck">Посмотреть книги</string>
+
+</resources>
