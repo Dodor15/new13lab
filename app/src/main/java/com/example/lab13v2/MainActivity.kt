@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
             binding.spinner.adapter = spinnerAdapter
         }
 
+
+
+
         binding.button.setOnClickListener {
             if(!binding.editTextTextPerson.text.isEmpty()){
 
@@ -74,6 +77,10 @@ class MainActivity : AppCompatActivity() {
         }
         binding.button3.setOnClickListener {
             intent= Intent(this, AddSpinActivity::class.java)
+            startActivity(intent)
+        }
+        binding.goCheck.setOnClickListener {
+            intent=Intent(this, BooksActivity::class.java)
             startActivity(intent)
         }
 

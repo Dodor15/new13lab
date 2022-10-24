@@ -8,56 +8,67 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.example.lab13v2.data.BookDAO
 import com.example.lab13v2.data.BookDataBase
 import com.example.lab13v2.data.DATABASE_NAME
 import com.example.lab13v2.data.models.BookType
+import com.example.lab13v2.data.models.StyleType
 import java.util.concurrent.Executors
 
 class BooksActivity : AppCompatActivity() {
 
     private lateinit var rv: RecyclerView
-    private lateinit var bookList: MutableList<BookType>
-    private lateinit var SelectBook:MutableList<String>
-    var indexChanged=-1
+    private var bookList: MutableList<BookType> = mutableListOf()
+    private var selectBook:MutableList<StyleType> = mutableListOf()
+    var index=-1
+
+
+private lateinit var db: BookDataBase
+    private lateinit var bookDAO: BookDAO
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_books)
 
-        var db: BookDataBase = Room.databaseBuilder(this, BookDataBase::class.java, DATABASE_NAME).build()
-        val bookDAO = db.bookDAO()
-        val executor = Executors.newSingleThreadExecutor()
-        val books = bookDAO.getAllBook()
+        var db = Room.databaseBuilder(this, BookDataBase::class.java, DATABASE_NAME).build()
+        bookDAO = db.bookDAO()
 
 
-        if(indexChanged==-1){
 
-        }
-        val adapter=BookRVAdapter(this, bookList)
 
-        books.observe(this){
-            bookList.addAll( it )
-            SelectBook.clear()
-            it.forEach{
-                SelectBook.add(it.stule)
-            }
-
-            val adapter = BookRVAdapter(this, bookList)
-            val rvListener = object : BookRVAdapter.ItemClickListener{
-                override fun onItemClick(view: View?, position: Int) {
-                    val intent = Intent(this@BooksActivity,MainActivity::class.java)
-                    indexChanged= position
-                    intent.putExtra("num", position)
-                    startActivity(intent)
-                    Toast.makeText(this@BooksActivity, "position: $position",
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
-            adapter.setClickListener(rvListener)
-            rv = findViewById(R.id.recyclerView)
-            rv.adapter = adapter
-            rv.layoutManager = LinearLayoutManager(this)
-
+        DataBasetoList()
+        updateInfo()
 
     }
+
+    fun DataBasetoList(){
+        bookList.clear()
+        selectBook.clear()
+
+        val books = bookDAO.getAllBook()
+        books.observe(this, androidx.lifecycle.Observer {
+            it.forEach {
+                bookList.add(BookType(it.id,it.stule, it.title, it.authors, it.index, it.pageCount))
+                updateInfo()
+            }
+        })
+    }
+    fun updateInfo() {
+        val rv = findViewById<RecyclerView>(R.id.recyclerView)
+        val adapter = BookRVAdapter(this, bookList)
+        val rvListener = object : BookRVAdapter.ItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                val intent = Intent(this@BooksActivity, MainActivity::class.java)
+                intent.putExtra("index", position)
+                intent.putExtra("id", bookList[position].id.toString())
+                index = position
+                startActivity(intent)
+            }
+        }
+        adapter.setOnClickListener(rvListener)
+        rv.layoutManager = LinearLayoutManager(this)
+        rv.adapter = adapter
+    }
 }
+

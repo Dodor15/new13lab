@@ -14,12 +14,9 @@ class BookRVAdapter(context: Context?, val data: MutableList<BookType>): Recycle
 
     private var iClickListener: ItemClickListener? = null
 
-    fun setClickListener (itemClickListener: ItemClickListener?){
-        iClickListener=itemClickListener
-    }
 
     interface ItemClickListener{
-        fun onItemClick(view: Int, position: Int)
+        fun onItemClick(view: View?, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
@@ -34,24 +31,24 @@ class BookRVAdapter(context: Context?, val data: MutableList<BookType>): Recycle
         holder.IndexTextView.text=item.index
         holder.CountTextView.text=item.pageCount.toString()
     }
+    fun setOnClickListener(itemClickListener: ItemClickListener?){
+        iClickListener = itemClickListener
+    }
 
     override fun getItemCount(): Int =data.size
 
-    inner class BookViewHolder(item:View):RecyclerView.ViewHolder(item),
-    View.OnClickListener{
+    inner class BookViewHolder(item:View):RecyclerView.ViewHolder(item),View.OnClickListener{
         var styleTextView: TextView = item.findViewById(R.id.tvStyle)
         var titleTextView: TextView = item.findViewById(R.id.tvTitle)
         var authorsTextView: TextView = item.findViewById(R.id.tvAuthors)
         var IndexTextView: TextView = item.findViewById(R.id.tvIndex)
         var CountTextView: TextView = item.findViewById(R.id.tvCount)
-
         init {
             itemView.setOnClickListener(this)
         }
 
-        override fun onClick(view: View) {
-            iClickListener?.onItemClick(view, adapterPosition)
+        override fun onClick(v: View?) {
+            iClickListener?.onItemClick(v, adapterPosition)
         }
-
     }
 }
