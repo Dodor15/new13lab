@@ -15,12 +15,15 @@ interface BookDAO {
     @Query("SELECT * FROM $BOOK_TABLE")
     fun getAllBook(): LiveData<List<BookType>>
 
+    @Query("SELECT * FROM $BOOK_TABLE WHERE _id=:id")
+    fun getBook(id:Int): LiveData<List<BookType>>
+
     @Insert
     fun addBook(bookType: BookType)
     @Update
     fun saveBook(bookType: BookType)
     @Delete
-    fun KillBook(bookType: BookType)
+    fun killBook(bookType: BookType)
 
     @Query("SELECT * FROM $STYLE_TABLE WHERE _id=:id")
     fun getStyle(id:Int): StyleType
