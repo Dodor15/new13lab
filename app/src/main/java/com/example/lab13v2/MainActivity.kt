@@ -4,6 +4,7 @@ import android.R
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -107,24 +108,33 @@ class MainActivity : AppCompatActivity() {
                                     aurhor.toString(),
                                     index.toString(),
                                     pages.toInt()
-                            ))
+                        ))
                     }
                 }
                 else if(bookId ==-1) {
-                    val executor = Executors.newSingleThreadExecutor()
 
+                    val executor = Executors.newSingleThreadExecutor()
                     val tvspinner = binding.spinner.selectedItem.toString()
                     DBGet()
-                    executor.execute {
-                        bookDAO.addBook(BookType(
-                                0, tvspinner,
-                                binding.editTextTextPerson.text.toString(),
-                                binding.editTextTextPersontAuthors.text.toString(),
-                                binding.editTextTextPersonIndex.text.toString(),
-                                binding.editTextNumberPageCount.text.toString().toInt()
-                            )
-                        )
-                    }
+                        val aurhor:String =binding.editTextTextPersontAuthors.text.toString();
+                        val tvspinner = binding.spinner.selectedItem.toString()
+                        val title:String =binding.editTextTextPerson.text.toString();
+                        val index:String = binding.editTextTextPersonIndex.text.toString()
+                        val pages:Int = binding.editTextNumberPageCount.text.toString().toInt()
+                        val executor = Executors.newSingleThreadExecutor()
+                        DBGet()
+                        executor.execute {
+
+                            bookDAO.addBook( BookType(
+                                booksID,
+                                tvspinner,
+                                title.toString(),
+                                aurhor.toString(),
+                                index.toString(),
+                                pages.toInt()
+                            ))
+                        }
+                        Log.d("QWE", "add book")
                     val books = bookDAO.getAllBook()
                     books.observe(this) { it ->
                         styles.clear()
